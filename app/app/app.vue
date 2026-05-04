@@ -1,6 +1,6 @@
 <template>
   <div class="sidebar">
-    <nuxt-link to="/Home">
+    <nuxt-link to="/">
       <div class="mainheader">Fake Instagram</div>
     </nuxt-link>
 
