@@ -20,7 +20,14 @@
   </div>
 </template>
 
-<script></script>
+<script setup>
+import { createClient } from "@supabase/supabase-js";
+const config = useRuntimeConfig();
+const supabase = createClient(
+  "https://brbnarajxfzxgdmtaxsz.supabase.co",
+  "sb_publishable_kugcCe61KKEOBiHGpiyUgw_DzP4nM5I",
+);
+</script>
 
 <style scoped>
 .textdecornone {
