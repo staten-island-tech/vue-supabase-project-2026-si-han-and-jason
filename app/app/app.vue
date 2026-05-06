@@ -29,6 +29,8 @@
 .sidebar {
   width: 300px;
   background-color: bisque;
+  height: 300px;
+  max-height: 300px;
 }
 .mainheader {
   font-size: 40px;
