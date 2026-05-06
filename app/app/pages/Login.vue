@@ -3,16 +3,44 @@
     <div class="bigtext">Login</div>
 
     <div class="medtext">Email:</div>
-    <input class="textbox" placeholder="Email" />
+    <input v-model="email" class="textbox" placeholder="Email" />
 
     <div class="medtext">Password:</div>
-    <input class="textbox" type="password" placeholder="Password" />
+    <input
+      v-model="password"
+      class="textbox"
+      type="password"
+      placeholder="Password"
+    />
 
-    <button class="loginbutton">Login</button>
+    <button class="loginbutton" @click="loginUser">Login</button>
   </div>
 </template>
 
-<script></script>
+<script setup>
+import { ref } from "vue";
+
+const email = ref("");
+const password = ref("");
+
+const { $supabase } = useNuxtApp();
+
+const loginUser = async () => {
+  console.log("Button pressed!");
+
+  const { data, error } = await $supabase.auth.signInWithPassword({
+    email: email.value,
+    password: password.value,
+  });
+
+  if (error) {
+    alert("Login failed");
+    return;
+  }
+
+  alert("Logged in!");
+};
+</script>
 
 <style scoped>
 .page {
