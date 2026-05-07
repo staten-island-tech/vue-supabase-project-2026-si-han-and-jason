@@ -13,33 +13,30 @@
       placeholder="Password"
     />
 
-    <button class="loginbutton" @click="loginUser">Login</button>
+    <button class="loginbutton" @click="login">Login</button>
   </div>
 </template>
 
 <script setup>
-import { ref } from "vue";
+const supabase = useSupabaseClient();
+const router = useRouter();
 
 const email = ref("");
 const password = ref("");
+const errorMsg = ref("");
 
-const { $supabase } = useNuxtApp();
-
-const loginUser = async () => {
-  console.log("Button pressed!");
-
-  const { data, error } = await $supabase.auth.signInWithPassword({
+async function login() {
+  const { error } = await supabase.auth.signInWithPassword({
     email: email.value,
     password: password.value,
   });
 
   if (error) {
-    alert("Login failed");
-    return;
+    errorMsg.value = error.message;
+  } else {
+    router.push("/feed");
   }
-
-  alert("Logged in!");
-};
+}
 </script>
 
 <style scoped>
