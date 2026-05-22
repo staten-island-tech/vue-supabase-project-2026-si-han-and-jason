@@ -1,6 +1,6 @@
 <template>
   <div class="page">
-    <div class="bigtext">Login</div>
+    <div class="bigtext">Sign Up</div>
 
     <div class="medtext">Email:</div>
     <input class="textbox" placeholder="Email" v-model="email" />
@@ -13,27 +13,28 @@
       v-model="password"
     />
 
-    <button class="loginbutton" @click="login">Login</button>
+    <button class="signupbutton" @click="signup">Sign Up</button>
 
-    <div v-if="errorMsg" style="color: red">{{ errorMsg }}</div>
+    <div v-if="errorMsg" class="error">{{ errorMsg }}</div>
+    <div v-if="successMsg" class="success">{{ successMsg }}</div>
 
-    <div class="signuptext">
-      Don't have an account?
-      <nuxt-link to="/signup">Sign Up</nuxt-link>
+    <div class="logintext">
+      Already have an account?
+      <nuxt-link to="/login">Login</nuxt-link>
     </div>
   </div>
 </template>
 
 <script setup>
 const supabase = useSupabaseClient();
-const router = useRouter();
 
 const email = ref("");
 const password = ref("");
 const errorMsg = ref("");
+const successMsg = ref("");
 
-async function login() {
-  const { error } = await supabase.auth.signInWithPassword({
+async function signup() {
+  const { error } = await supabase.auth.signUp({
     email: email.value,
     password: password.value,
   });
@@ -41,7 +42,7 @@ async function login() {
   if (error) {
     errorMsg.value = error.message;
   } else {
-    router.push("/");
+    successMsg.value = "Account created! Check your email to confirm.";
   }
 }
 </script>
@@ -61,7 +62,7 @@ async function login() {
   height: 20px;
   width: 250px;
 }
-.loginbutton {
+.signupbutton {
   height: 40px;
   width: 75px;
   margin-top: 15px;
@@ -70,8 +71,14 @@ async function login() {
   background-color: green;
   border-radius: 5px;
 }
-.signuptext {
+.logintext {
   margin-top: 15px;
   font-size: 15px;
+}
+.error {
+  color: red;
+}
+.success {
+  color: green;
 }
 </style>

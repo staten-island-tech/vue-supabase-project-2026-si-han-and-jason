@@ -5,11 +5,11 @@
         <div class="mainheader">Fake Instagram</div>
       </nuxt-link>
 
-      <nuxt-link class="textdecornone" to="/Events">
+      <nuxt-link class="textdecornone" to="/events">
         <div class="navigation">Events</div>
       </nuxt-link>
 
-      <nuxt-link class="textdecornone" to="/Login">
+      <nuxt-link class="textdecornone" to="/login">
         <div class="navigation">Login</div>
       </nuxt-link>
     </div>
@@ -24,10 +24,16 @@
 import { createClient } from "@supabase/supabase-js";
 const config = useRuntimeConfig();
 const supabase = createClient(
-  "https://brbnarajxfzxgdmtaxsz.supabase.co",
-  "sb_publishable_kugcCe61KKEOBiHGpiyUgw_DzP4nM5I",
+  "https://fkzvkjtouhauzjknnshl.supabase.co",
+  "sb_publishable_h4oJWnLLg_eN2PARpi7I7Q_3wSu0X18",
 );
 </script>
+
+<style>
+body {
+  margin: 0px;
+}
+</style>
 
 <style scoped>
 .textdecornone {
