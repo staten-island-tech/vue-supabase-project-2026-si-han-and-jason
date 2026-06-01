@@ -1,7 +1,7 @@
 <template>
-  <div>You are home</div>
+  <div>Home is here</div>
 </template>
 
-<script></script>
+<script setup></script>
 
-<style scoped></style>
+<style lang="scss" scoped></style>
