@@ -1,5 +1,5 @@
 <template>
-  <div>Home is here</div>
+  <div>Log in bro</div>
 </template>
 
 <script setup></script>

@@ -2,25 +2,30 @@
   <div class="feed">
     <div v-if="posts.length === 0">No posts yet!</div>
 
-    <!-- Profile info -->
-    <div class="posthead">
-      <img
-        class="avatar"
-        :src="
-          post.profiles.avatar_url ||
-          'https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg'
-        "
-      />
-      <span class="username">{{ post.profiles.username }}</span>
+    <div class="post" v-for="post in posts" :key="post.id">
+      <!-- Profile info -->
+      <div class="posthead">
+        <img
+          class="avatar"
+          :src="post.profiles?.avatar_url || 'https://placekitten.com/50/50'"
+        />
+        <span class="username">{{
+          post.profiles?.username || "Unknown User"
+        }}</span>
+      </div>
+
+      <!-- Post image -->
+      <img class="postimage" :src="post.image_url" />
+
+      <!-- Caption -->
+      <p class="caption">{{ post.caption }}</p>
+
+      <!-- Like count -->
+      <p class="likes">{{ post.likes?.length || 0 }} likes</p>
+
+      <!-- Comments count -->
+      <p class="comments">{{ post.comments?.length || 0 }} comments</p>
     </div>
-
-    <img class="postimage" :src="post.image_url" />
-
-    <p class="caption">{{ post.caption }}</p>
-
-    <p class="likes">{{ post.likes.length }} likes</p>
-
-    <p class="comments">{{ post.comments.length }} comments</p>
   </div>
 </template>
 
@@ -28,7 +33,7 @@
 const supabase = useSupabaseClient();
 const posts = ref([]);
 
-const { data } = await supabase
+const { data, error } = await supabase
   .from("posts")
   .select(
     `
@@ -45,6 +50,10 @@ const { data } = await supabase
   `,
   )
   .order("created_at", { ascending: false });
+
+if (error) {
+  console.log("Feed error:", error.message);
+}
 
 posts.value = data || [];
 </script>

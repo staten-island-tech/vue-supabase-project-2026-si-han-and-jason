@@ -41,7 +41,7 @@ async function login() {
   if (error) {
     errorMsg.value = error.message;
   } else {
-    router.push("/");
+    router.push("/feed");
   }
 }
 </script>
