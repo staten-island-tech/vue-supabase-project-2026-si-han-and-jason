@@ -38,7 +38,11 @@ async function logout() {
   router.push("/login");
 }
 </script>
-
+<style>
+body {
+  margin: 0px;
+}
+</style>
 <style scoped>
 .textdecornone {
   text-decoration: none;

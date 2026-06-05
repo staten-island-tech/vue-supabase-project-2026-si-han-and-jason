@@ -34,16 +34,29 @@ const errorMsg = ref("");
 const successMsg = ref("");
 
 async function signup() {
-  const { error } = await supabase.auth.signUp({
+  if (!email.value || !password.value) {
+    errorMsg.value = "Please fill in all fields";
+    return;
+  }
+
+  const { data, error } = await supabase.auth.signUp({
     email: email.value,
     password: password.value,
   });
 
   if (error) {
     errorMsg.value = error.message;
-  } else {
-    successMsg.value = "Account created! Check your email to confirm.";
+    return;
   }
+
+  if (data.user) {
+    await supabase.from("profiles").insert({
+      id: data.user.id,
+      username: email.value,
+    });
+  }
+
+  successMsg.value = "Account created! You can now log in.";
 }
 </script>
 
