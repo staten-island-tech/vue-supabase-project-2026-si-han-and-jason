@@ -7,7 +7,7 @@
       <div class="posthead">
         <img
           class="avatar"
-          :src="post.profiles?.avatar_url || 'https://placekitten.com/50/50'"
+          :src="post.profiles?.avatar_url || '/images/defaulticon.jpg'"
         />
         <span class="username">{{
           post.profiles?.username || "Unknown User"
