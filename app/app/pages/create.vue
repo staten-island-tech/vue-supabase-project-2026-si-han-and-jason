@@ -32,7 +32,7 @@ async function createPost() {
   }
 
   const { error } = await supabase.from("posts").insert({
-    user_id: user.value.id,
+    user_id: user.value.sub, // changed from user.value.id
     image_url: imageUrl.value,
     caption: caption.value,
   });
