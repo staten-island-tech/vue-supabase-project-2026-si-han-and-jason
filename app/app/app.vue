@@ -13,8 +13,8 @@
         <div class="navigation">Create Post</div>
       </nuxt-link>
 
-      <div v-if="user" class="userinfo">
-        <div class="navigation">{{ user.email }}</div>
+      <div v-if="authStore.isLoggedIn" class="userinfo">
+        <div class="navigation">{{ authStore.user?.email }}</div>
         <button class="logoutbutton" @click="logout">Logout</button>
       </div>
       <nuxt-link v-else class="textdecornone" to="/login">
@@ -29,20 +29,38 @@
 </template>
 
 <script setup>
+import { useAuthStore } from "~/stores/auth";
+
 const supabase = useSupabaseClient();
 const user = useSupabaseUser();
+const authStore = useAuthStore();
 const router = useRouter();
+
+watch(
+  user,
+  (newUser) => {
+    if (newUser) {
+      authStore.setUser(newUser);
+    } else {
+      authStore.clearUser();
+    }
+  },
+  { immediate: true },
+);
 
 async function logout() {
   await supabase.auth.signOut();
+  authStore.clearUser();
   router.push("/login");
 }
 </script>
+
 <style>
 body {
   margin: 0px;
 }
 </style>
+
 <style scoped>
 .textdecornone {
   text-decoration: none;

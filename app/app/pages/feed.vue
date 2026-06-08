@@ -1,8 +1,16 @@
 <template>
   <div class="feed">
-    <div v-if="posts.length === 0">No posts yet!</div>
+    <!-- Search bar for filtering posts -->
+    <input
+      class="searchbar"
+      placeholder="Search by username or caption..."
+      v-model="searchQuery"
+      @input="postsStore.filterPosts(searchQuery)"
+    />
 
-    <div class="post" v-for="post in posts" :key="post.id">
+    <div v-if="postsStore.filteredPosts.length === 0">No posts found!</div>
+
+    <div class="post" v-for="post in postsStore.filteredPosts" :key="post.id">
       <!-- Profile info -->
       <div class="posthead">
         <img
@@ -13,6 +21,7 @@
           post.profiles?.username || "Unknown User"
         }}</span>
 
+        <!-- Delete button only shows on your own posts -->
         <button
           v-if="user && String(post.user_id) === String(user.sub)"
           class="deletebutton"
@@ -44,9 +53,14 @@
 </template>
 
 <script setup>
+import { usePostsStore } from "~/stores/posts";
+import { useAuthStore } from "~/stores/auth";
+
 const supabase = useSupabaseClient();
 const user = useSupabaseUser();
-const posts = ref([]);
+const postsStore = usePostsStore();
+const authStore = useAuthStore();
+const searchQuery = ref("");
 
 async function fetchPosts() {
   const { data, error } = await supabase
@@ -69,7 +83,9 @@ async function fetchPosts() {
     .order("created_at", { ascending: false });
 
   if (error) console.log("Feed error:", error.message);
-  posts.value = data || [];
+
+  // Save posts to the Pinia store
+  postsStore.setPosts(data || []);
 }
 
 function isLiked(post) {
@@ -115,13 +131,9 @@ async function deletePost(post) {
   const confirm = window.confirm("Are you sure you want to delete this post?");
   if (!confirm) return;
 
-  // Delete likes first to avoid foreign key errors
   await supabase.from("likes").delete().eq("post_id", post.id);
-
-  // Delete comments first too
   await supabase.from("comments").delete().eq("post_id", post.id);
 
-  // Now delete the post
   const { error } = await supabase
     .from("posts")
     .delete()
@@ -146,6 +158,16 @@ onMounted(async () => {
 .feed {
   width: 500px;
   margin: 0 auto;
+}
+.searchbar {
+  width: 100%;
+  height: 35px;
+  margin-bottom: 20px;
+  padding: 0 10px;
+  font-size: 15px;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  box-sizing: border-box;
 }
 .post {
   border: 1px solid #ccc;
