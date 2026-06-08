@@ -67,7 +67,7 @@ onMounted(() => {
     showWelcomeText.value = progress;
     loadingText.value = progress + "%";
 
-    if (progress < 95) {
+    if (progress < 92) {
       speed = 8;
     } else {
       speed = 120;
