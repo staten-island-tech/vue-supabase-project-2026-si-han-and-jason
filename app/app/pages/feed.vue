@@ -1,6 +1,5 @@
 <template>
   <div class="feed">
-    <!-- Search bar for filtering posts -->
     <input
       class="searchbar"
       placeholder="Search by username or caption..."
@@ -10,45 +9,16 @@
 
     <div v-if="postsStore.filteredPosts.length === 0">No posts found!</div>
 
-    <div class="post" v-for="post in postsStore.filteredPosts" :key="post.id">
-      <!-- Profile info -->
-      <div class="posthead">
-        <img
-          class="avatar"
-          :src="post.profiles?.avatar_url || '/images/defaulticon.jpg'"
-        />
-        <span class="username">{{
-          post.profiles?.username || "Unknown User"
-        }}</span>
-
-        <!-- Delete button only shows on your own posts -->
-        <button
-          v-if="user && String(post.user_id) === String(user.sub)"
-          class="deletebutton"
-          @click="deletePost(post)"
-        >
-          🗑️ Delete
-        </button>
-      </div>
-
-      <!-- Post image -->
-      <img class="postimage" :src="post.image_url" />
-
-      <!-- Caption -->
-      <p class="caption">{{ post.caption }}</p>
-
-      <!-- Like button -->
-      <div class="actions">
-        <button
-          class="likebutton"
-          :class="{ liked: isLiked(post) }"
-          @click="toggleLike(post)"
-          :disabled="!user"
-        >
-          {{ isLiked(post) ? "❤️" : "🤍" }} {{ post.likes?.length || 0 }} likes
-        </button>
-      </div>
-    </div>
+    <PostCard
+      v-for="post in postsStore.filteredPosts"
+      :key="post.id"
+      :post="post"
+      :currentUserId="user?.sub"
+      @like="toggleLike"
+      @delete="deletePost"
+      @comment="addComment"
+      @deleteComment="deleteComment"
+    />
   </div>
 </template>
 
@@ -77,29 +47,29 @@ async function fetchPosts() {
         avatar_url
       ),
       likes (id, user_id),
-      comments (id)
+      comments (
+        id,
+        content,
+        user_id,
+        created_at,
+        profiles (
+          username
+        )
+      )
     `,
     )
     .order("created_at", { ascending: false });
 
   if (error) console.log("Feed error:", error.message);
-
-  // Save posts to the Pinia store
   postsStore.setPosts(data || []);
-}
-
-function isLiked(post) {
-  if (!user.value?.sub) return false;
-  if (!post.likes || post.likes.length === 0) return false;
-  return post.likes.some(
-    (like) => String(like.user_id) === String(user.value.sub),
-  );
 }
 
 async function toggleLike(post) {
   if (!user.value?.sub) return;
 
-  const alreadyLiked = isLiked(post);
+  const alreadyLiked = post.likes?.some(
+    (like) => String(like.user_id) === String(user.value.sub),
+  );
 
   if (alreadyLiked) {
     const { error } = await supabase
@@ -122,6 +92,38 @@ async function toggleLike(post) {
       console.log("Like error:", error.message);
       return;
     }
+  }
+
+  await fetchPosts();
+}
+
+async function addComment({ post, content }) {
+  if (!user.value?.sub) return;
+
+  const { error } = await supabase.from("comments").insert({
+    post_id: post.id,
+    user_id: user.value.sub,
+    content: content,
+  });
+
+  if (error) {
+    console.log("Comment error:", error.message);
+    return;
+  }
+
+  await fetchPosts();
+}
+
+async function deleteComment(comment, post) {
+  const { error } = await supabase
+    .from("comments")
+    .delete()
+    .eq("id", comment.id)
+    .eq("user_id", user.value.sub);
+
+  if (error) {
+    console.log("Delete comment error:", error.message);
+    return;
   }
 
   await fetchPosts();
@@ -168,68 +170,5 @@ onMounted(async () => {
   border: 1px solid #ccc;
   border-radius: 20px;
   box-sizing: border-box;
-}
-.post {
-  border: 1px solid #ccc;
-  margin-bottom: 30px;
-  border-radius: 8px;
-  overflow: hidden;
-}
-.posthead {
-  display: flex;
-  align-items: center;
-  padding: 10px;
-  gap: 10px;
-}
-.avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-}
-.username {
-  font-weight: bold;
-}
-.deletebutton {
-  margin-left: auto;
-  background: none;
-  border: 1px solid red;
-  border-radius: 20px;
-  padding: 5px 15px;
-  font-size: 12px;
-  color: red;
-  cursor: pointer;
-}
-.deletebutton:hover {
-  background-color: #fff0f0;
-}
-.postimage {
-  width: 100%;
-}
-.caption {
-  padding: 10px;
-}
-.actions {
-  padding: 0 10px 10px;
-  display: flex;
-  gap: 10px;
-  align-items: center;
-}
-.likebutton {
-  background: none;
-  border: 1px solid #ccc;
-  border-radius: 20px;
-  padding: 5px 15px;
-  font-size: 14px;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-.likebutton.liked {
-  border-color: red;
-  color: red;
-  background-color: #fff0f0;
-}
-.likebutton:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
 }
 </style>
