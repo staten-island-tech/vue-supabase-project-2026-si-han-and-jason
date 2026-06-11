@@ -37,7 +37,9 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted, nextTick } from "vue";
+import { gsap } from "gsap";
+
 const supabase = useSupabaseClient();
 const user = useSupabaseUser();
 const router = useRouter();
@@ -47,36 +49,60 @@ const showWelcomeText = ref(0);
 const loadingText = ref("0%");
 
 onMounted(() => {
-  let progress = 0;
-  let speed = 10;
+  const progressObj = { value: 0 };
+  const tl = gsap.timeline();
 
-  const animate = () => {
-    if (progress >= 100) {
-      setTimeout(() => {
-        loadingText.value = "Welcome!";
+  tl.to(progressObj, {
+    value: 100,
+    duration: 2.5,
+    ease: "power2.out",
+    onUpdate: () => {
+      showWelcomeText.value = progressObj.value;
+      loadingText.value = Math.floor(progressObj.value) + "%";
+    },
+  });
 
-        setTimeout(() => {
-          showWelcome.value = false;
-        }, 1500);
-      }, 500);
+  tl.to(".welcome-title, .bar-container", {
+    opacity: 0,
+    duration: 0.3,
+    delay: 1,
+  });
 
-      return;
-    }
+  tl.call(() => {
+    loadingText.value = "Welcome!";
+  });
 
-    progress += 1;
-    showWelcomeText.value = progress;
-    loadingText.value = progress + "%";
+  tl.fromTo(
+    ".welcome-title",
+    { y: 50, opacity: 0 },
+    {
+      y: 0,
+      opacity: 1,
+      duration: 0.8,
+      ease: "power2.out",
+      delay: 0.5,
+      immediateRender: false,
+    },
+  );
 
-    if (progress < 92) {
-      speed = 8;
-    } else {
-      speed = 120;
-    }
+  tl.to(".welcome", {
+    opacity: 0,
+    duration: 0.5,
+    delay: 0.3,
+  });
 
-    setTimeout(animate, speed);
-  };
+  tl.call(async () => {
+    showWelcome.value = false;
+    await nextTick();
 
-  animate();
+    gsap.from(".sidebar, .navigation, .userinfo, .page", {
+      y: 30,
+      opacity: 0,
+      duration: 0.8,
+      stagger: 0.1,
+      ease: "power2.out",
+    });
+  });
 });
 
 async function logout() {

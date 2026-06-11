@@ -13,6 +13,7 @@
     "@nuxtjs/supabase": "^2.0.9",
     "@supabase/supabase-js": "^2.105.1",
     "nuxt": "^4.4.2",
+    "v-gsap-nuxt": "^1.5.12",
     "vue": "^3.5.33",
     "vue-router": "^5.0.6"
   }
