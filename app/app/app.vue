@@ -7,41 +7,48 @@
     <h1 class="welcome-title">{{ loadingText }}</h1>
   </div>
 
-  <div v-if="!showWelcome" class="flex">
-    <div class="sidebar">
-      <nuxt-link class="textdecornone" to="/">
-        <div class="mainheader">Fake Instagram</div>
-      </nuxt-link>
+  <div v-if="!showWelcome" class="flex"></div>
+  <div class="sidebar"></div>
+  <nuxt-link class="textdecornone" to="/">
+    <div class="mainheader">Fake Instagram</div>
+  </nuxt-link>
+  <div class="flex">
+    <nav class="sidebar">
+      <header>
+        <nuxt-link class="textdecornone" to="/feed">
+          <div class="mainheader">Fake Instagram</div>
+        </nuxt-link>
+      </header>
 
-      <nuxt-link class="textdecornone" to="/feed">
-        <div class="navigation">Feed</div>
-      </nuxt-link>
+      <section class="navlinks">
+        <nuxt-link class="textdecornone" to="/create">
+          <div class="navigation">Create Post</div>
+        </nuxt-link>
 
-      <nuxt-link class="textdecornone" to="/create">
-        <div class="navigation">Create Post</div>
-      </nuxt-link>
+        <div v-if="authStore.isLoggedIn" class="userinfo">
+          <div class="navigation">{{ authStore.user?.email }}</div>
+          <button class="logoutbutton" @click="logout">Logout</button>
+        </div>
+        <nuxt-link v-else class="textdecornone" to="/login">
+          <div class="navigation">Login</div>
+        </nuxt-link>
+      </section>
+    </nav>
 
-      <div v-if="user" class="userinfo">
-        <div class="navigation">{{ user.email }}</div>
-        <button class="logoutbutton" @click="logout">Logout</button>
-      </div>
-      <nuxt-link v-else class="textdecornone" to="/login">
-        <div class="navigation">Login</div>
-      </nuxt-link>
-    </div>
-
-    <div class="page">
+    <main class="page">
       <NuxtPage />
-    </div>
+    </main>
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted, nextTick } from "vue";
 import { gsap } from "gsap";
+import { useAuthStore } from "~/stores/auth";
 
 const supabase = useSupabaseClient();
 const user = useSupabaseUser();
+const authStore = useAuthStore();
 const router = useRouter();
 
 const showWelcome = ref(true);
@@ -104,9 +111,21 @@ onMounted(() => {
     });
   });
 });
+watch(
+  user,
+  (newUser) => {
+    if (newUser) {
+      authStore.setUser(newUser);
+    } else {
+      authStore.clearUser();
+    }
+  },
+  { immediate: true },
+);
 
 async function logout() {
   await supabase.auth.signOut();
+  authStore.clearUser();
   router.push("/login");
 }
 </script>
@@ -184,6 +203,10 @@ body {
 .mainheader {
   font-size: 40px;
   margin: 20px auto;
+}
+.navlinks {
+  display: flex;
+  flex-direction: column;
 }
 .navigation {
   font-size: 25px;
