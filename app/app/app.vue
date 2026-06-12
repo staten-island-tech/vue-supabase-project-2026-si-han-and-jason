@@ -3,16 +3,10 @@
     <div class="bar-container">
       <div class="bar-fill" :style="{ width: showWelcomeText + '%' }"></div>
     </div>
-
     <h1 class="welcome-title">{{ loadingText }}</h1>
   </div>
 
-  <div v-if="!showWelcome" class="flex"></div>
-  <div class="sidebar"></div>
-  <nuxt-link class="textdecornone" to="/">
-    <div class="mainheader">Fake Instagram</div>
-  </nuxt-link>
-  <div class="flex">
+  <div v-else class="flex">
     <nav class="sidebar">
       <header>
         <nuxt-link class="textdecornone" to="/feed">
