@@ -1,18 +1,32 @@
 <template>
-  <div class="page">
-    <div class="bigtext">Create Post</div>
+  <main class="page">
+    <header>
+      <h1 class="bigtext">Create Post</h1>
+    </header>
 
-    <div class="medtext">Image URL:</div>
-    <input class="textbox" placeholder="Paste image URL" v-model="imageUrl" />
+    <section class="form">
+      <label for="imageUrl" class="medtext">Image URL:</label>
+      <input
+        id="imageUrl"
+        class="textbox"
+        placeholder="Paste image URL"
+        v-model="imageUrl"
+      />
 
-    <div class="medtext">Caption:</div>
-    <input class="textbox" placeholder="Write a caption" v-model="caption" />
+      <label for="caption" class="medtext">Caption:</label>
+      <input
+        id="caption"
+        class="textbox"
+        placeholder="Write a caption"
+        v-model="caption"
+      />
 
-    <button class="postbutton" @click="createPost">Post</button>
+      <button class="postbutton" @click="createPost">Post</button>
 
-    <div v-if="errorMsg" style="color: red">{{ errorMsg }}</div>
-    <div v-if="successMsg" style="color: green">{{ successMsg }}</div>
-  </div>
+      <p v-if="errorMsg" class="errormsg" role="alert">{{ errorMsg }}</p>
+      <p v-if="successMsg" class="successmsg" role="status">{{ successMsg }}</p>
+    </section>
+  </main>
 </template>
 
 <script setup>
@@ -32,7 +46,7 @@ async function createPost() {
   }
 
   const { error } = await supabase.from("posts").insert({
-    user_id: user.value.sub, // changed from user.value.id
+    user_id: user.value.sub,
     image_url: imageUrl.value,
     caption: caption.value,
   });
@@ -40,7 +54,6 @@ async function createPost() {
   if (error) {
     errorMsg.value = error.message;
   } else {
-    successMsg.value = "Post created!";
     router.push("/feed");
   }
 }
@@ -55,6 +68,7 @@ async function createPost() {
   margin-bottom: 20px;
 }
 .medtext {
+  display: block;
   font-size: 25px;
 }
 .textbox {
@@ -70,5 +84,13 @@ async function createPost() {
   color: white;
   background-color: green;
   border-radius: 5px;
+}
+.errormsg {
+  color: red;
+  margin-top: 10px;
+}
+.successmsg {
+  color: green;
+  margin-top: 10px;
 }
 </style>

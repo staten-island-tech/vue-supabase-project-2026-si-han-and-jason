@@ -1,25 +1,31 @@
 <template>
-  <div class="feed">
-    <input
-      class="searchbar"
-      placeholder="Search by username or caption..."
-      v-model="searchQuery"
-      @input="postsStore.filterPosts(searchQuery)"
-    />
+  <main class="feed">
+    <header>
+      <h1 class="feedtitle">Feed</h1>
+      <input
+        class="searchbar"
+        placeholder="Search by username or caption..."
+        v-model="searchQuery"
+        @input="postsStore.filterPosts(searchQuery)"
+        aria-label="Search posts"
+      />
+    </header>
 
-    <div v-if="postsStore.filteredPosts.length === 0">No posts found!</div>
+    <section>
+      <p v-if="postsStore.filteredPosts.length === 0">No posts found!</p>
 
-    <PostCard
-      v-for="post in postsStore.filteredPosts"
-      :key="post.id"
-      :post="post"
-      :currentUserId="user?.sub"
-      @like="toggleLike"
-      @delete="deletePost"
-      @comment="addComment"
-      @deleteComment="deleteComment"
-    />
-  </div>
+      <PostCard
+        v-for="post in postsStore.filteredPosts"
+        :key="post.id"
+        :post="post"
+        :currentUserId="user?.sub"
+        @like="toggleLike"
+        @delete="deletePost"
+        @comment="addComment"
+        @deleteComment="deleteComment"
+      />
+    </section>
+  </main>
 </template>
 
 <script setup>
@@ -160,6 +166,10 @@ onMounted(async () => {
 .feed {
   width: 500px;
   margin: 0 auto;
+}
+.feedtitle {
+  font-size: 30px;
+  margin-bottom: 10px;
 }
 .searchbar {
   width: 100%;

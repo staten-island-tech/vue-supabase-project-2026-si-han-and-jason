@@ -1,32 +1,44 @@
 <template>
-  <div class="page">
-    <div class="bigtext">Sign Up</div>
+  <main class="page">
+    <header>
+      <h1 class="bigtext">Sign Up</h1>
+    </header>
 
-    <div class="medtext">Email:</div>
-    <input class="textbox" placeholder="Email" v-model="email" />
+    <section class="form">
+      <label for="email" class="medtext">Email:</label>
+      <input
+        id="email"
+        class="textbox"
+        placeholder="Email"
+        v-model="email"
+        type="email"
+      />
 
-    <div class="medtext">Password:</div>
-    <input
-      class="textbox"
-      type="password"
-      placeholder="Password"
-      v-model="password"
-    />
+      <label for="password" class="medtext">Password:</label>
+      <input
+        id="password"
+        class="textbox"
+        type="password"
+        placeholder="Password"
+        v-model="password"
+      />
 
-    <button class="signupbutton" @click="signup">Sign Up</button>
+      <button class="signupbutton" @click="signup">Sign Up</button>
 
-    <div v-if="errorMsg" class="error">{{ errorMsg }}</div>
-    <div v-if="successMsg" class="success">{{ successMsg }}</div>
+      <p v-if="errorMsg" class="errormsg" role="alert">{{ errorMsg }}</p>
+      <p v-if="successMsg" class="successmsg" role="status">{{ successMsg }}</p>
 
-    <div class="logintext">
-      Already have an account?
-      <nuxt-link to="/login">Login</nuxt-link>
-    </div>
-  </div>
+      <p class="logintext">
+        Already have an account?
+        <nuxt-link to="/login">Login</nuxt-link>
+      </p>
+    </section>
+  </main>
 </template>
 
 <script setup>
 const supabase = useSupabaseClient();
+const router = useRouter();
 
 const email = ref("");
 const password = ref("");
@@ -56,7 +68,7 @@ async function signup() {
     });
   }
 
-  successMsg.value = "Account created! You can now log in.";
+  router.push("/feed");
 }
 </script>
 
@@ -69,11 +81,13 @@ async function signup() {
   margin-bottom: 20px;
 }
 .medtext {
+  display: block;
   font-size: 25px;
 }
 .textbox {
   height: 20px;
   width: 250px;
+  margin-bottom: 10px;
 }
 .signupbutton {
   height: 40px;
@@ -84,14 +98,16 @@ async function signup() {
   background-color: green;
   border-radius: 5px;
 }
+.errormsg {
+  color: red;
+  margin-top: 10px;
+}
+.successmsg {
+  color: green;
+  margin-top: 10px;
+}
 .logintext {
   margin-top: 15px;
   font-size: 15px;
-}
-.error {
-  color: red;
-}
-.success {
-  color: green;
 }
 </style>

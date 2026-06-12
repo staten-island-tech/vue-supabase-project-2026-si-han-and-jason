@@ -1,27 +1,38 @@
 <template>
-  <div class="page">
-    <div class="bigtext">Login</div>
+  <main class="page">
+    <header>
+      <h1 class="bigtext">Login</h1>
+    </header>
 
-    <div class="medtext">Email:</div>
-    <input class="textbox" placeholder="Email" v-model="email" />
+    <section class="form">
+      <label for="email" class="medtext">Email:</label>
+      <input
+        id="email"
+        class="textbox"
+        placeholder="Email"
+        v-model="email"
+        type="email"
+      />
 
-    <div class="medtext">Password:</div>
-    <input
-      class="textbox"
-      type="password"
-      placeholder="Password"
-      v-model="password"
-    />
+      <label for="password" class="medtext">Password:</label>
+      <input
+        id="password"
+        class="textbox"
+        type="password"
+        placeholder="Password"
+        v-model="password"
+      />
 
-    <button class="loginbutton" @click="login">Login</button>
+      <button class="loginbutton" @click="login">Login</button>
 
-    <div v-if="errorMsg" style="color: red">{{ errorMsg }}</div>
+      <p v-if="errorMsg" class="errormsg" role="alert">{{ errorMsg }}</p>
 
-    <div class="signuptext">
-      Don't have an account?
-      <nuxt-link to="/signup">Sign Up</nuxt-link>
-    </div>
-  </div>
+      <p class="signuptext">
+        Don't have an account?
+        <nuxt-link to="/signup">Sign Up</nuxt-link>
+      </p>
+    </section>
+  </main>
 </template>
 
 <script setup>
@@ -33,6 +44,11 @@ const password = ref("");
 const errorMsg = ref("");
 
 async function login() {
+  if (!email.value || !password.value) {
+    errorMsg.value = "Please fill in all fields";
+    return;
+  }
+
   const { error } = await supabase.auth.signInWithPassword({
     email: email.value,
     password: password.value,
@@ -55,11 +71,13 @@ async function login() {
   margin-bottom: 20px;
 }
 .medtext {
+  display: block;
   font-size: 25px;
 }
 .textbox {
   height: 20px;
   width: 250px;
+  margin-bottom: 10px;
 }
 .loginbutton {
   height: 40px;
@@ -69,6 +87,10 @@ async function login() {
   color: white;
   background-color: green;
   border-radius: 5px;
+}
+.errormsg {
+  color: red;
+  margin-top: 10px;
 }
 .signuptext {
   margin-top: 15px;
