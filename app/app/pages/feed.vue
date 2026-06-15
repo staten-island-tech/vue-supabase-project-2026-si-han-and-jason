@@ -244,8 +244,19 @@ async function deletePost(post: Post): Promise<void> {
   );
   if (!confirmDelete) return;
 
-  await supabase.from("likes").delete().eq("post_id", post.id);
-  await supabase.from("comments").delete().eq("post_id", post.id);
+  let result = await supabase.from("likes").delete().eq("post_id", post.id);
+  if (result.error) {
+    console.error("Delete likes error:", result.error.message);
+    alert(`Could not remove likes before deleting post: ${result.error.message}`);
+    return;
+  }
+
+  result = await supabase.from("comments").delete().eq("post_id", post.id);
+  if (result.error) {
+    console.error("Delete comments error:", result.error.message);
+    alert(`Could not remove comments before deleting post: ${result.error.message}`);
+    return;
+  }
 
   const { error } = await supabase
     .from("posts")
@@ -254,7 +265,7 @@ async function deletePost(post: Post): Promise<void> {
     .eq("user_id", userId);
 
   if (error) {
-    console.error("Delete error:", error.message);
+    console.error("Delete post error:", error.message);
     alert(`Could not remove post: ${error.message}`);
     return;
   }
