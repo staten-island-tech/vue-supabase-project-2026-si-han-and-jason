@@ -1,6 +1,5 @@
 <template>
   <div class="post">
-    <!-- Profile info -->
     <div class="posthead">
       <img
         class="avatar"
@@ -20,18 +19,13 @@
       </button>
     </div>
 
-    <!-- Post image -->
     <img class="postimage" :src="post.image_url" :alt="post.caption" />
 
-    <!-- Caption -->
     <p class="caption">{{ post.caption }}</p>
 
-    <!-- Stats -->
     <p class="stats">{{ likeCount }} likes · {{ commentCount }} comments</p>
 
-    <!-- Actions -->
     <div class="actions">
-      <!-- Like button -->
       <button
         class="likebutton"
         :class="{ liked: isLiked }"
@@ -41,15 +35,12 @@
         {{ isLiked ? "❤️" : "🤍" }} {{ likeCount }} likes
       </button>
 
-      <!-- Toggle comments -->
       <button class="commenttoggle" @click="showComments = !showComments">
         💬 {{ showComments ? "Hide" : "Show" }} Comments
       </button>
     </div>
 
-    <!-- Comments section -->
     <div v-if="showComments" class="commentsection">
-      <!-- Existing comments -->
       <div
         v-if="post.comments && post.comments.length > 0"
         class="commentslist"
@@ -60,7 +51,6 @@
           >
           <span class="commentcontent">{{ comment.content }}</span>
 
-          <!-- Delete comment button only for comment owner -->
           <button
             v-if="String(comment.user_id) === String(currentUserId)"
             class="deletecomment"
@@ -73,7 +63,6 @@
 
       <div v-else class="nocomments">No comments yet!</div>
 
-      <!-- Add comment input -->
       <div v-if="currentUserId" class="addcomment">
         <input
           class="commentinput"
@@ -106,7 +95,6 @@ const emit = defineEmits(["like", "delete", "comment", "deleteComment"]);
 const showComments = ref(false);
 const newComment = ref("");
 
-// Computed properties
 const likeCount = computed(() => props.post.likes?.length || 0);
 const commentCount = computed(() => props.post.comments?.length || 0);
 const isLiked = computed(() => {
