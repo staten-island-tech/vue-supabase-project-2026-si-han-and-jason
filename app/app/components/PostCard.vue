@@ -129,6 +129,8 @@ function submitComment() {
   align-items: center;
   padding: 10px;
   gap: 10px;
+  background-color: #ffffff;
+  color: #111;
 }
 .avatar {
   width: 40px;
@@ -137,6 +139,8 @@ function submitComment() {
 }
 .username {
   font-weight: bold;
+  color: #111;
+  font-size: 1rem;
 }
 .deletebutton {
   margin-left: auto;
@@ -156,10 +160,12 @@ function submitComment() {
 }
 .caption {
   padding: 10px;
+  color: #111;
+  font-size: 16px;
 }
 .stats {
   padding: 0 10px;
-  color: gray;
+  color: #333;
   font-size: 14px;
 }
 .actions {
