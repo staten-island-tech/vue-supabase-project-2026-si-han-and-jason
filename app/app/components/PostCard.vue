@@ -187,63 +187,49 @@ function submitComment() {
   cursor: not-allowed;
 }
 .commenttoggle {
-  background: none;
-  border: 1px solid #ccc;
+  background: #fff;
+  border: 1px solid #999;
   border-radius: 20px;
-  padding: 5px 15px;
+  padding: 8px 18px;
   font-size: 14px;
   cursor: pointer;
   transition: all 0.2s;
+  color: #222;
 }
 .commentsection {
   padding: 12px;
-  border-top: 1px solid #dcdcdc;
-  background-color: #f7f7f7;
+  border-top: 1px solid #ccc;
+  background-color: #ffffff;
 }
 .commentslist {
   margin-bottom: 12px;
 }
-  margin-bottom: 10px;
-}
 .comment {
   display: flex;
   align-items: center;
-  gap: 5px;
-  margin-bottom: 8px;
-  font-size: 14px;
+  gap: 10px;
+  margin-bottom: 10px;
+  padding: 10px 12px;
+  background: #f6f6f6;
+  border: 1px solid #ddd;
+  border-radius: 14px;
+  color: #111;
+  font-size: 15px;
 }
 .commentuser {
-  font-weight: bold;
+  font-weight: 700;
+  color: #111;
 }
 .commentcontent {
   flex: 1;
+  color: #111;
 }
 .deletecomment {
   background: none;
   border: none;
-  color: red;
+  color: #c00;
   cursor: pointer;
   font-size: 12px;
-}
-.commentuser {
-  font-weight: bold;
-  color: #222;
-}
-.commentcontent {
-  flex: 1;
-  color: #111;
-}
-.comment {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 10px;
-  padding: 10px;
-  border-radius: 12px;
-  background-color: #ffffff;
-  border: 1px solid #ddd;
-  color: #111;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
 }
 .nocomments {
   color: #444;
