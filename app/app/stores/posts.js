@@ -13,6 +13,11 @@ export const usePostsStore = defineStore("posts", {
       this.filteredPosts = posts;
     },
 
+    removePost(postId) {
+      this.posts = this.posts.filter((post) => post.id !== postId);
+      this.filteredPosts = this.filteredPosts.filter((post) => post.id !== postId);
+    },
+
     filterPosts(query) {
       this.searchQuery = query;
 

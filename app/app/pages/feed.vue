@@ -266,10 +266,12 @@ async function deletePost(post: Post): Promise<void> {
 
   if (error) {
     console.error("Delete post error:", error.message);
-    alert(`Could not remove post: ${error.message}`);
+    alert(`Could not remove post from database: ${error.message}`);
+    postsStore.removePost(post.id);
     return;
   }
 
+  postsStore.removePost(post.id);
   await fetchPosts();
 }
 
