@@ -34,6 +34,16 @@ const supabase = useSupabaseClient();
 const user = useSupabaseUser();
 const router = useRouter();
 
+watch(
+  user,
+  (value) => {
+    if (!value) {
+      navigateTo("/login");
+    }
+  },
+  { immediate: true },
+);
+
 const imageUrl = ref("");
 const caption = ref("");
 const errorMsg = ref("");
