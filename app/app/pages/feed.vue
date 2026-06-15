@@ -96,16 +96,6 @@ const authStore = useAuthStore();
 const searchQuery = ref<string>("");
 const totalPostsCount = ref<number>(0);
 
-watch(
-  user,
-  (value) => {
-    if (!value) {
-      navigateTo("/login");
-    }
-  },
-  { immediate: true },
-);
-
 const filteredPosts = computed(
   () => (postsStore.filteredPosts || []) as Post[],
 );
